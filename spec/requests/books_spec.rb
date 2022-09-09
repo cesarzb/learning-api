@@ -3,8 +3,9 @@ require 'rails_helper'
 RSpec.describe 'book API', type: :request do
     describe 'GET /books' do
         before do
-            FactoryBot.create(:book)
-            FactoryBot.create(:book)
+            author = FactoryBot.create(:author)
+            FactoryBot.create(:book, author: author)
+            FactoryBot.create(:book, author: author)
         end
         it 'returns all books' do
 
@@ -16,17 +17,21 @@ RSpec.describe 'book API', type: :request do
     end
 
     describe 'POST /books' do
+        let!(:author) { FactoryBot.create(:author) }
+
         it 'creates a book' do
             expect{ 
-                post '/api/v1/books', params: { book: FactoryBot.attributes_for(:book) }     
+                book_params = FactoryBot.attributes_for(:book)
+                book_params[:author_id] = author.id
+                post '/api/v1/books', params: { book: book_params }     
             }.to change { Book.count }.from(0).to(1)
-            
             expect(response).to have_http_status(:created)
         end
     end
 
     describe 'DELETE /books/:id' do
-        let!(:book) { FactoryBot.create(:book) }
+        let!(:author) { FactoryBot.create(:author) }
+        let!(:book)   { FactoryBot.create(:book, author: author) }
         it 'deletes a book' do
             expect{
                 delete "/api/v1/books/#{book.id}"
