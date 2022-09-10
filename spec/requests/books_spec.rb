@@ -10,20 +10,54 @@ RSpec.describe 'book API', type: :request do
             get '/api/v1/books'
             expect(response).to have_http_status(:success)
             expect(response_body.size).to eq(2)
-            expect(response_body).to eq([
-                {
-                'id' => book.id,
-                'title' => "#{book.title}",
-                'author_name' => "#{author.first_name} #{author.last_name}",
-                'author_age' => author.age,
-                },
-                {
-                'id' => other_book.id,
-                'title' => "#{other_book.title}",
-                'author_name' => "#{author.first_name} #{author.last_name}",
-                'author_age' => author.age,
-                }
-            ])
+            expect(response_body).to eq(
+                [
+                    {
+                    'id' => book.id,
+                    'title' => "#{book.title}",
+                    'author_name' => "#{author.first_name} #{author.last_name}",
+                    'author_age' => author.age,
+                    },
+                    {
+                    'id' => other_book.id,
+                    'title' => "#{other_book.title}",
+                    'author_name' => "#{author.first_name} #{author.last_name}",
+                    'author_age' => author.age,
+                    }
+                ]
+            )
+        end
+
+        it 'returns subset of books with limit' do
+            get '/api/v1/books', params: { limit: 1 }
+            expect(response).to have_http_status(:success)
+            expect(response_body.size).to eq(1)
+            expect(response_body).to eq(
+                [    
+                    {
+                        'id' => book.id,
+                        'title' => "#{book.title}",
+                        'author_name' => "#{author.first_name} #{author.last_name}",
+                        'author_age' => author.age                    
+                    }
+                ]
+            )
+        end
+
+        it 'returns subset of books with limit and offset' do
+            get '/api/v1/books', params: { limit: 1, offset: 1 }
+            expect(response).to have_http_status(:success)
+            expect(response_body.size).to eq(1)
+            expect(response_body).to eq(
+                [
+                    {
+                        'id' => other_book.id,
+                        'title' => "#{other_book.title}",
+                        'author_name' => "#{author.first_name} #{author.last_name}",
+                        'author_age' => author.age
+                    }
+                ]
+            )
         end
     end
 
