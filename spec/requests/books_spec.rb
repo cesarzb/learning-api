@@ -17,13 +17,12 @@ RSpec.describe 'book API', type: :request do
     end
 
     describe 'POST /books' do
-        let!(:author) { FactoryBot.create(:author) }
-
         it 'creates a book' do
             expect{ 
                 book_params = FactoryBot.attributes_for(:book)
-                book_params[:author_id] = author.id
-                post '/api/v1/books', params: { book: book_params }     
+                author_params = FactoryBot.attributes_for(:author)
+                
+                post '/api/v1/books', params: { book: book_params, author: author_params }     
             }.to change { Book.count }.from(0).to(1)
             expect(response).to have_http_status(:created)
         end
