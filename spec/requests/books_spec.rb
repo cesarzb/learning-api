@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'book API', type: :request do
+RSpec.describe 'Book API', type: :request do
     describe 'GET /books' do    
         let!(:author) { FactoryBot.create(:author) }
         let!(:book) { FactoryBot.create(:book, author: author) }
