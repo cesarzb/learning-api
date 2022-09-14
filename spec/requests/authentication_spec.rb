@@ -2,12 +2,15 @@ require 'rails_helper'
 
 RSpec.describe 'Authentication', type: :request do
     describe 'POST /authenticate' do
+        let(:user)  { FactoryBot.create(:user, username: 'User321') }
+        let(:token) { AuthenticationTokenService.call(user.id) }
+        
         it 'authenticates the client' do
-            post '/api/v1/authenticate', params: { username: 'User321', password: 'password'}
+            post '/api/v1/authenticate', params: { username: user.username, password: 'password'}
 
             expect(response).to have_http_status(:created)
             expect(response.body).to eq(
-                { 'token': '123' }.to_json
+                { 'token': token }.to_json
             )
         end
         
