@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AuthenticationTokenService do
-    describe '.call' do
-        let(:token) { token = described_class.call(1) }
+    describe '.encode' do
+        let(:token) { token = described_class.encode(1) }
 
         it 'returns an authentication token' do
             decoded_token = JWT.decode( 
